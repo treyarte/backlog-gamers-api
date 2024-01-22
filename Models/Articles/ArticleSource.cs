@@ -5,18 +5,18 @@ namespace xmlParseExample.Models;
 public class ArticleSource
 {
 
-    public ArticleSource(NewsSource source, string siteUrl, string rssUrl, string logoSrc)
+    public ArticleSource(string title,  ArticleSourceType type, string siteUrl, string rssUrl, string logoSrc)
     {
-        Source = source;
+        Title = title;
+        Type = type;   
         SiteUrl = siteUrl;
         RssUrl = rssUrl;
         LogoSrc = logoSrc;
     }
+
+    public string Title { get; set; }
     
-    /// <summary>
-    /// Where the article came from
-    /// </summary>
-    public NewsSource Source { get; set; }
+    public ArticleSourceType Type { get; set; }
     
     /// <summary>
     /// The url of the website 
