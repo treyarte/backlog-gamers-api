@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using backlog_gamers_api.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
 using xmlParseExample.Models;
 
@@ -56,8 +57,8 @@ public class XmlController : ControllerBase
                             item.Title,
                             item.Link,
                             item.Description,
-                            item.MediaContent.Url,
-                            item.ContentEncoded);
+                            item.MediaContent?.Url ?? "",
+                            item.ContentEncoded ?? "");
                         
                         articles.Add(article);
                     }
