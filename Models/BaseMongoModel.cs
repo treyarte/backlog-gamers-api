@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Serializers;
 
-namespace xmlParseExample.Models;
+namespace backlog_gamers_api.Models;
 
 public abstract class BaseMongoModel
 {

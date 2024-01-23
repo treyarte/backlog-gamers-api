@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using backlog_gamers_api.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
 using xmlParseExample.Models;
 

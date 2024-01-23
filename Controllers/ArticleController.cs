@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using backlog_gamers_api.Models.Articles;
+using backlog_gamers_api.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
 using xmlParseExample.Models.Enums;
@@ -12,11 +14,13 @@ namespace backlog_gamers_api.Controllers;
 [Route("api/[controller]/[action]")]
 public class ArticleController : ControllerBase
 {
-    public ArticleController()
+    public ArticleController(IArticlesRepository articlesRepository)
     {
         _client = new HttpClient();
+        _articlesRepository = articlesRepository;
     }
 
+    private readonly IArticlesRepository _articlesRepository;
     private readonly HttpClient _client;
 
     /// <summary>
@@ -51,10 +55,32 @@ public class ArticleController : ControllerBase
                     articlesFromWp.Add(article);
                 }
             });
-
+        
             await Task.WhenAll(getArticleTasks);
 
-            return Ok(articlesFromWp);
+            List<Article> articles = new List<Article>();
+
+            foreach (var wpArticle in articlesFromWp)
+            {
+                Article article = new(
+                    wpArticle.TitleObj.Title,
+                    wpArticle.Link,
+                    "",
+                    wpArticle.ImgSrc,
+                    ""
+                );
+
+                if (string.IsNullOrWhiteSpace(wpArticle.ImgSrc))
+                {
+                    //TODO check for null
+                    article.ImageUrl = wpArticle.Yoast.ImgSrcTwo.First().ImgUrl;
+                }
+                
+                articles.Add(article);
+            }
+            
+            int articlesInserted = await _articlesRepository.Post(articles);
+            return Ok(articlesInserted);
         }
         catch (Exception e)
         {
@@ -62,4 +88,5 @@ public class ArticleController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to refresh articles");
         }
     }
+    
 }

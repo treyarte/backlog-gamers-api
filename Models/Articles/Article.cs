@@ -1,7 +1,15 @@
-﻿namespace xmlParseExample.Models;
+﻿namespace backlog_gamers_api.Models.Articles;
 
 public class Article : BaseMongoModel
 {
+    public Article()
+    {
+        this.Title = "";
+        this.Url = "";
+        this.ShortDescription = "";
+        this.ImageUrl = "";
+        this.Content = "";
+    }
     public Article(
         string title,
         string url,
