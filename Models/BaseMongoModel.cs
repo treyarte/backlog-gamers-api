@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using backlog_gamers_api.Extensions;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Serializers;
 
@@ -10,9 +11,9 @@ public abstract class BaseMongoModel
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
     
-    [BsonSerializer(typeof(DateTimeOffsetSerializer))]
+    [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     
-    [BsonSerializer(typeof(DateTimeOffsetSerializer))]
+    [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

@@ -3,6 +3,8 @@ using backlog_gamers_api.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -12,8 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>(provider =>
 {
-    //TODO get from env/secrets
-    return new ArticlesRepository("mongodb://localhost:27017", "backlogGamersLocal", "articles");
+    return new ArticlesRepository("articles");
 });
 
 var app = builder.Build();

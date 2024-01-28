@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 
+
 namespace backlog_gamers_api.Extensions;
 
 /// <summary>
@@ -11,16 +12,16 @@ namespace backlog_gamers_api.Extensions;
 /// The LoanLeads collection/db was setup by another developer and setup captureTime to use Mongo's timestamp.
 /// They used this function to serialize/deserialize that timestamp.
 /// </summary>
-public class DateTimeOffsetSerializer : StructSerializerBase<DateTimeOffset>, IRepresentationConfigurable<DateTimeOffsetSerializer>
+public class CustomDateTimeOffsetSerializer : StructSerializerBase<DateTimeOffset>, IRepresentationConfigurable<CustomDateTimeOffsetSerializer>
     {
         private BsonType _representation;
         private string StringSerializationFormat = "YYYY-MM-ddTHH:mm:ss.FFFFFFK";
 
-        public DateTimeOffsetSerializer() : this(BsonType.DateTime)
+        public CustomDateTimeOffsetSerializer() : this(BsonType.DateTime)
         {
         }
 
-        public DateTimeOffsetSerializer(BsonType representation)
+        public CustomDateTimeOffsetSerializer(BsonType representation)
         {
             switch (representation)
             {
@@ -80,13 +81,13 @@ public class DateTimeOffsetSerializer : StructSerializerBase<DateTimeOffset>, IR
             }
         }
 
-        public DateTimeOffsetSerializer WithRepresentation(BsonType representation)
+        public CustomDateTimeOffsetSerializer WithRepresentation(BsonType representation)
         {
             if (representation == _representation)
             {
                 return this;
             }
-            return new DateTimeOffsetSerializer(representation);
+            return new CustomDateTimeOffsetSerializer(representation);
         }
 
         IBsonSerializer IRepresentationConfigurable.WithRepresentation(BsonType representation)
