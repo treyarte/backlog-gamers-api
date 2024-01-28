@@ -1,5 +1,6 @@
 ﻿using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Repositories.Interfaces;
+using backlog_gamers_api.Services.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
@@ -18,74 +19,51 @@ public class ArticleController : ControllerBase
     {
         _client = new HttpClient();
         _articlesRepository = articlesRepository;
+        _gamingArticlesService = new GamingArticlesService();
     }
 
     private readonly IArticlesRepository _articlesRepository;
+    private readonly GamingArticlesService _gamingArticlesService;
     private readonly HttpClient _client;
-
+    
     /// <summary>
-    /// Extract article data from articles sources to
-    /// update the database with new articles
+    /// Add articles from external sources to our database
     /// </summary>
-    /// <param name="url"></param>
-    /// <returns>bool</returns>
+    /// <returns></returns>
     [HttpGet]
-    [ActionName("refresh-articles")]
-    public async Task<IActionResult> RefreshArticles([FromQuery] string url)
+    [ActionName("getAllArticles")]
+    public async Task<IActionResult> GetArticles()
     {
-        List<ArticleWpJson> articlesFromWp = new List<ArticleWpJson>();
         try
         {
-            
-            var getArticleTasks = ArticleSourceList.Sources.Select(async source =>
-            {
-                if (source.Type != ArticleSourceType.WordPressJson) { return; }
-                
-                var res = await _client.GetAsync(source.RssUrl);
-                
-                if (!res.IsSuccessStatusCode) { return; }
-
-                string articleStr = await res.Content.ReadAsStringAsync();
-                List<ArticleWpJson>? convertedArticles = JsonConvert.DeserializeObject<List<ArticleWpJson>>(articleStr);
-
-                if (convertedArticles == null) { return; }
-
-                foreach (ArticleWpJson article in convertedArticles)
-                {
-                    articlesFromWp.Add(article);
-                }
-            });
-        
-            await Task.WhenAll(getArticleTasks);
-
-            List<Article> articles = new List<Article>();
-
-            foreach (var wpArticle in articlesFromWp)
-            {
-                Article article = new(
-                    wpArticle.TitleObj.Title,
-                    wpArticle.Link,
-                    "",
-                    wpArticle.ImgSrc,
-                    ""
-                );
-
-                if (string.IsNullOrWhiteSpace(wpArticle.ImgSrc))
-                {
-                    //TODO check for null
-                    article.ImageUrl = wpArticle.Yoast.ImgSrcTwo.First().ImgUrl;
-                }
-                
-                articles.Add(article);
-            }
-            
-            int articlesInserted = await _articlesRepository.Post(articles);
-            return Ok(articlesInserted);
+            var articles = await _articlesRepository.GetAll();
+            return Ok(articles);
         }
         catch (Exception e)
         {
-            //TODO add logging 
+            Console.WriteLine(e);
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to refresh articles");
+        }
+    }
+    
+    /// <summary>
+    /// Add articles from external sources to our database
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    [ActionName("addExternalArticles")]
+    public async Task<IActionResult> AddExternalArticles()
+    {
+        try
+        {
+            var articles = await _gamingArticlesService.GetExternalArticles();
+            int addCount = await _articlesRepository.PostMultiple(articles);
+            return Ok(addCount);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to add external articles");
         }
     }
     

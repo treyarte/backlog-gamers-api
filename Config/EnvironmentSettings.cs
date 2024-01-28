@@ -43,7 +43,7 @@ public class EnvironmentSettings
     public static EnvironmentSettings Dev =>
         new EnvironmentSettings()
         {
-            EnvironmentType = EnvironmentType.Local,
+            EnvironmentType = EnvironmentType.Dev,
             DbConnStr = Environment.GetEnvironmentVariable("dbConnStr") ?? "",
             DbName = Environment.GetEnvironmentVariable("dbName") ?? "",
         };
@@ -55,19 +55,25 @@ public class EnvironmentSettings
         new EnvironmentSettings()
         {
             //TODO setup amazon secrets manager
-            EnvironmentType = EnvironmentType.Local,
+            EnvironmentType = EnvironmentType.Prod,
             DbConnStr = Environment.GetEnvironmentVariable("dbConnStr") ?? "",
             DbName = Environment.GetEnvironmentVariable("dbName") ?? "",
         };
 
+    
     /// <summary>
     /// Gets the settings for our current environment
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static EnvironmentSettings GetSetting(EnvironmentType type)
+    public static EnvironmentSettings GetCurrentEnvSettings()
     {
-        return type switch
+        EnvironmentSettings envSettings;
+        var currentEnv = Environment.GetEnvironmentVariable("currentEnv");
+
+        Enum.TryParse(currentEnv, out EnvironmentType currentEnvType);
+        
+        return currentEnvType switch
         {
             EnvironmentType.Local => Local,
             EnvironmentType.Dev => Dev,

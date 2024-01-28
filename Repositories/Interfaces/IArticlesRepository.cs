@@ -5,5 +5,4 @@ namespace backlog_gamers_api.Repositories.Interfaces;
 
 public interface IArticlesRepository : IBaseRepository<Article>
 {
-    public Task<int> Post(List<Article> articles);
 }
