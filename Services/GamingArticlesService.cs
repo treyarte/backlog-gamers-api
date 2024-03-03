@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -70,7 +71,10 @@ public class GamingArticlesService
                         item.Link,
                         "",
                         item.MediaContent?.Url ?? "",
-                        "");
+                        "",
+                        DateHelper.ConvertStrToDate(item.PubDate),
+                        new ArticleStats()
+                        );
                     
                     articles.Add(article);
                 }
@@ -118,7 +122,9 @@ public class GamingArticlesService
                 wpArticle.Link,
                 "",
                 wpArticle.ImgSrc,
-                ""
+                "",
+                DateHelper.ConvertStrToDate(wpArticle.DateString),
+                new ArticleStats()
             );
             if (string.IsNullOrWhiteSpace(wpArticle.ImgSrc))
             {
