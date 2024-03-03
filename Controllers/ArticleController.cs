@@ -36,8 +36,10 @@ public class ArticleController : ControllerBase
     {
         try
         {
-            var articles = await _articlesRepository.GetAll();
-            return Ok(articles);
+            IEnumerable<Article> articles = await _articlesRepository.GetAll();
+            var enumerable = articles.ToList();
+            List<Article> first10Articles = enumerable.ToList().TakeLast(10).ToList();
+            return Ok(first10Articles);
         }
         catch (Exception e)
         {
