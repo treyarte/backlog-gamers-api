@@ -1,6 +1,7 @@
 using System.Xml.Serialization;
+using xmlParseExample.Models;
 
-namespace xmlParseExample.Models;
+namespace backlog_gamers_api.Models;
 
 public class Channel
 {

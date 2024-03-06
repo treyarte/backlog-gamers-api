@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using backlog_gamers_api.Models;
 
 namespace xmlParseExample.Models;
 
@@ -24,6 +25,9 @@ public class Item
 
     [XmlElement("content", Namespace = "http://search.yahoo.com/mrss/") ]
     public MediaContent MediaContent { get; set; }
+    
+    [XmlElement("thumbnail", Namespace = "http://search.yahoo.com/mrss/") ]
+    public MediaContent Media { get; set; }
 
     [XmlElement("creator", Namespace = "http://purl.org/dc/elements/1.1/")]
     public string DcCreator { get; set; }

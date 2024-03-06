@@ -7,7 +7,7 @@ public static class DateHelper
     /// </summary>
     /// <param name="dateStr"></param>
     /// <returns></returns>
-    public static DateTimeOffset? ConvertStrToDate(string dateStr)
+    public static DateTimeOffset ConvertStrToDate(string dateStr)
     {
         bool isParsed = DateTimeOffset.TryParse(dateStr, out DateTimeOffset newDate);
 
@@ -16,6 +16,6 @@ public static class DateHelper
             return newDate;
         }
 
-        return null;
+        return DateTimeOffset.MinValue;
     }
 }

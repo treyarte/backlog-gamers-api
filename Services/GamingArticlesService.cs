@@ -35,14 +35,15 @@ public class GamingArticlesService
 
         return xml;
     }
-    
+
     /// <summary>
     /// Get a list of external articles from XML sources
     /// </summary>
     /// <param name="url"></param>
+    /// <param name="articleSite"></param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
-    public async Task<List<Article>> GetArticlesFromXML(string url)
+    public async Task<List<Article>> GetArticlesFromXML(string url, ArticleSiteEnum articleSite)
     {
         string xml = await DownloadXML(url);
         List<Article> articles = new List<Article>();
@@ -68,9 +69,10 @@ public class GamingArticlesService
                 {
                     Article article = new(
                         item.Title,
+                        articleSite,
                         item.Link,
                         "",
-                        item.MediaContent?.Url ?? "",
+                        item.MediaContent?.Url ?? item.Media?.Url ?? "",
                         "",
                         DateHelper.ConvertStrToDate(item.PubDate),
                         new ArticleStats()
@@ -83,13 +85,14 @@ public class GamingArticlesService
 
         return articles;
     }
-    
+
     /// <summary>
     /// Get a list of external articles from JSON sources
     /// </summary>
     /// <param name="url"></param>
+    /// <param name="articleSit"></param>
     /// <returns></returns>
-    public async Task<List<Article>> GetArticlesFromJSON(string url)
+    public async Task<List<Article>> GetArticlesFromJson(string url, ArticleSiteEnum articleSite)
     {
         List<ArticleWpJson> articlesFromWp = new List<ArticleWpJson>();
         List<Article> articles = new List<Article>();
@@ -119,6 +122,7 @@ public class GamingArticlesService
         {
             Article article = new(
                 wpArticle.TitleObj.Title,
+                articleSite,
                 wpArticle.Link,
                 "",
                 wpArticle.ImgSrc,
@@ -147,16 +151,16 @@ public class GamingArticlesService
         List<Article> articlesList = new List<Article>();
         try
         {
-            var getArticlesTasks = ArticleSourceList.Sources.Select(async article =>
+            var getArticlesTasks = ArticleSourceList.Sources.Select(async source =>
             {
-                switch (article.Type)
+                switch (source.Type)
                 {
                     case ArticleSourceType.Xml:
-                        List<Article> articlesFromXml = await GetArticlesFromXML(article.RssUrl);
+                        List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
                         articlesList.AddRange(articlesFromXml);
                         break;
                     case ArticleSourceType.WordPressJson:
-                        List<Article> articlesFromJson = await GetArticlesFromJSON(article.RssUrl);
+                        List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
                         articlesList.AddRange(articlesFromJson);
                         break;
                     default:

@@ -1,4 +1,8 @@
-﻿namespace backlog_gamers_api.Models.Articles;
+﻿using backlog_gamers_api.Extensions;
+using MongoDB.Bson.Serialization.Attributes;
+using xmlParseExample.Models.Enums;
+
+namespace backlog_gamers_api.Models.Articles;
 
 /// <summary>
 /// Article class that holds news information from external and internal sites
@@ -7,39 +11,45 @@ public class Article : BaseMongoModel
 {
     public Article()
     {
-        this.Title = "";
-        this.Url = "";
-        this.ShortDescription = "";
-        this.ImageUrl = "";
-        this.Content = "";
-        this.ArticleDate = null;
-        this.Stats = new ArticleStats();
+        Title = "";
+        Url = "";
+        ArticleSite = ArticleSiteEnum.Unknown;
+        ShortDescription = "";
+        ImageUrl = "";
+        Content = "";
+        ArticleDate = DateTimeOffset.MinValue;
+        Stats = new ArticleStats();
     }
     public Article(
         string title,
+        ArticleSiteEnum articleSite,
         string url,
         string shortDescription,
         string imageUrl,
         string content,
-        DateTimeOffset? articleDate,
+        DateTimeOffset articleDate,
         ArticleStats stats
         )
     {
-        this.Title = title;
-        this.Url = url;
-        this.ShortDescription = shortDescription;
-        this.ImageUrl = imageUrl;
-        this.Content = content;
-        this.ArticleDate = articleDate;
-        this.Stats = stats;
+        Title = title;
+        ArticleSite = articleSite;
+        Url = url;
+        ShortDescription = shortDescription;
+        ImageUrl = imageUrl;
+        Content = content;
+        ArticleDate = articleDate;
+        Stats = stats;
     }
     public string Title { get; set; }
+    public ArticleSiteEnum ArticleSite { get; set; }
     public string Url { get; set; }
     public string ShortDescription { get; set; }
     public string ImageUrl { get; set; }
     public string Content { get; set; }
     public ArticleStats Stats { get; set; }
-    public DateTimeOffset? ArticleDate { get; set; }
+    
+    [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
+    public DateTimeOffset ArticleDate { get; set; }
 }
 
 /// <summary>

@@ -1,5 +1,6 @@
 using System.Threading.Channels;
 using System.Xml.Serialization;
+using Channel = backlog_gamers_api.Models.Channel;
 
 namespace xmlParseExample.Models;
 

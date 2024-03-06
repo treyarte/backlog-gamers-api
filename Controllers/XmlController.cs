@@ -3,6 +3,7 @@ using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
 using xmlParseExample.Models;
+using xmlParseExample.Models.Enums;
 
 namespace xmlParseExample.Controllers;
 
@@ -33,15 +34,16 @@ public class XmlController : ControllerBase
 
         return xml;
     }
-    
+
     /// <summary>
     /// Parses xml from a url
     /// </summary>
     /// <param name="url"></param>
+    /// <param name="articleSite"></param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     [HttpGet(Name = "ParseXML")]
-    public async Task<IActionResult> Get([FromQuery] string url)
+    public async Task<IActionResult> Get([FromQuery] string url, ArticleSiteEnum articleSite)
     {
         try
         {
@@ -70,6 +72,7 @@ public class XmlController : ControllerBase
                     {
                         Article article = new(
                             item.Title,
+                            articleSite,
                             item.Link,
                             item.Description,
                             item.MediaContent?.Url ?? "",
