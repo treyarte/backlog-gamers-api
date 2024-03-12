@@ -1,25 +1,24 @@
 ﻿using System.Xml.Serialization;
 using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
-using Microsoft.AspNetCore.Mvc;
+using backlog_gamers_api.Services.Interfaces;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
 using xmlParseExample.Models.Enums;
 
-namespace backlog_gamers_api.Services.Internal;
+namespace backlog_gamers_api.Services;
 
 /// <summary>
 /// Service for handling gaming news articles
-/// TODO create interface
 /// </summary>
-public class GamingArticlesService
+public class GamingArticlesService:IGamingArticlesService
 {
-    private readonly HttpClient _client;
-    
     public GamingArticlesService()
     {
         _client = new HttpClient();
     }
+    
+    private readonly HttpClient _client;
     
     /// <summary>
     /// Fetches 
@@ -71,9 +70,9 @@ public class GamingArticlesService
                         item.Title,
                         articleSite,
                         item.Link,
-                        "",
+                        item.Description,
                         item.MediaContent?.Url ?? item.Media?.Url ?? "",
-                        "",
+                        item.ContentEncoded,
                         DateHelper.ConvertStrToDate(item.PubDate),
                         new ArticleStats()
                         );
@@ -126,7 +125,7 @@ public class GamingArticlesService
                 wpArticle.Link,
                 "",
                 wpArticle.ImgSrc,
-                "",
+                wpArticle.ContentObj.Content,
                 DateHelper.ConvertStrToDate(wpArticle.DateString),
                 new ArticleStats()
             );

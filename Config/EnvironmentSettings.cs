@@ -27,6 +27,19 @@ public class EnvironmentSettings
     public string DbName { get; set; }
 
     /// <summary>
+    /// Our azure Key for interacting with the lang services
+    /// </summary>
+    /// <remarks>
+    /// I would like to store this in a key vault but it cost money
+    /// </remarks>
+    public string AzureKeyCredential { get; set; }
+    
+    /// <summary>
+    /// Endpoint url for accessing the azure language sevices 
+    /// </summary>
+    public string AzureLangEndpoint { get; set; }
+
+    /// <summary>
     /// Static property for local settings
     /// </summary>
     public static EnvironmentSettings Local =>
@@ -35,6 +48,8 @@ public class EnvironmentSettings
             EnvironmentType = EnvironmentType.Local,
             DbConnStr = Environment.GetEnvironmentVariable("dbConnStr") ?? "",
             DbName = Environment.GetEnvironmentVariable("dbName") ?? "",
+            AzureKeyCredential = Environment.GetEnvironmentVariable("azureKeyCredential") ?? "",
+            AzureLangEndpoint = Environment.GetEnvironmentVariable("azureLangEndpoint") ?? "",
         };
     
     /// <summary>
@@ -46,6 +61,8 @@ public class EnvironmentSettings
             EnvironmentType = EnvironmentType.Dev,
             DbConnStr = Environment.GetEnvironmentVariable("dbConnStr") ?? "",
             DbName = Environment.GetEnvironmentVariable("dbName") ?? "",
+            AzureKeyCredential = Environment.GetEnvironmentVariable("azureKeyCredential") ?? "",
+            AzureLangEndpoint = Environment.GetEnvironmentVariable("azureLangEndpoint") ?? "",
         };
 
     /// <summary>
@@ -54,10 +71,11 @@ public class EnvironmentSettings
     public static EnvironmentSettings Prod =>
         new EnvironmentSettings()
         {
-            //TODO setup amazon secrets manager
             EnvironmentType = EnvironmentType.Prod,
             DbConnStr = Environment.GetEnvironmentVariable("dbConnStr") ?? "",
             DbName = Environment.GetEnvironmentVariable("dbName") ?? "",
+            AzureKeyCredential = Environment.GetEnvironmentVariable("azureKeyCredential") ?? "",
+            AzureLangEndpoint = Environment.GetEnvironmentVariable("azureLangEndpoint") ?? "",
         };
 
     
