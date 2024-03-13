@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace xmlParseExample.Models;
+namespace backlog_gamers_api.Models;
 
 public class GuidElement
 {

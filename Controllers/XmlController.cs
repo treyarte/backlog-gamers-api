@@ -1,10 +1,15 @@
 using System.Xml.Serialization;
+using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
 using xmlParseExample.Models;
+using xmlParseExample.Models.Enums;
 
 namespace xmlParseExample.Controllers;
 
+/// <summary>
+/// This is just a demo controller and is just used for testing different types of xml formats
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class XmlController : ControllerBase
@@ -15,6 +20,11 @@ public class XmlController : ControllerBase
         _client = new HttpClient();
     }
 
+    /// <summary>
+    /// Download xml data from a url
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
     private async Task<string> DownloadXML(string url)
     {
         HttpResponseMessage resp = await _client.GetAsync(url);
@@ -24,9 +34,16 @@ public class XmlController : ControllerBase
 
         return xml;
     }
-    
+
+    /// <summary>
+    /// Parses xml from a url
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="articleSite"></param>
+    /// <returns></returns>
+    /// <exception cref="NullReferenceException"></exception>
     [HttpGet(Name = "ParseXML")]
-    public async Task<IActionResult> Get([FromQuery] string url)
+    public async Task<IActionResult> Get([FromQuery] string url, ArticleSiteEnum articleSite)
     {
         try
         {
@@ -55,10 +72,13 @@ public class XmlController : ControllerBase
                     {
                         Article article = new(
                             item.Title,
+                            articleSite,
                             item.Link,
                             item.Description,
                             item.MediaContent?.Url ?? "",
-                            item.ContentEncoded ?? "");
+                            item.ContentEncoded ?? "",
+                            DateHelper.ConvertStrToDate(item.PubDate),
+                            new ArticleStats());
                         
                         articles.Add(article);
                     }

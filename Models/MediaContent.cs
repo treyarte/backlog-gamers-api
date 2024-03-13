@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace xmlParseExample.Models;
+namespace backlog_gamers_api.Models;
 
 public class MediaContent
 {
@@ -16,3 +16,8 @@ public class MediaContent
     [XmlAttribute("width")]
     public int Width { get; set; }
 }
+
+/// <summary>
+/// Some xml files use this format instead of mediaContent
+/// </summary>
+// public class MediaThumbnail 

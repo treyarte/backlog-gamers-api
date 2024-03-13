@@ -18,6 +18,8 @@ public class ArticleWpJson
     public string Status { get; set; }
     [JsonProperty("title")]
     public TitleWpJson TitleObj { get; set; }
+    [JsonProperty("content")] 
+    public ContentWpJson ContentObj { get; set; }
     [JsonProperty("link")]
     public string Link { get; set; }
     [JsonProperty("jetpack_featured_media_url")]
@@ -34,6 +36,16 @@ public class TitleWpJson
     [JsonProperty("rendered")]
     public string Title { get; set; }
 }
+
+/// <summary>
+/// content of the article
+/// </summary>
+public class ContentWpJson
+{
+    [JsonProperty("rendered")]
+    public string Content { get; set; }
+}
+
 
 /// <summary>
 /// Json from seo Yoast
