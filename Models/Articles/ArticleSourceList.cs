@@ -82,11 +82,20 @@ public static class ArticleSourceList
             ""
         ),
         new ArticleSource(            
+            "Hardcore Gamer",
+            ArticleSourceType.Xml,
+            ArticleSiteEnum.HardcoreGamer,
+            "https://hardcoregamer.com/",
+            "https://hardcoregamer.com/feed",
+            ""
+        ),
+        new ArticleSource(            
             "Gematsu",
             ArticleSourceType.WordPressJson,
             ArticleSiteEnum.Gematsu,
             "https://www.gematsu.com",
             "https://www.gematsu.com/wp-json/wp/v2/posts",
+            // "https://gematsu.com/feed",
             ""
         ),
         new ArticleSource(            
@@ -101,7 +110,7 @@ public static class ArticleSourceList
             "MMOs.com",
             ArticleSourceType.WordPressJson,
             ArticleSiteEnum.Mmos,
-            "https://mmos.com/wp-json",
+            "https://mmos.com",
             "https://mmos.com/wp-json/wp/v2/posts",
             ""
         ),

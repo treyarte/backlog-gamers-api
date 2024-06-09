@@ -13,5 +13,7 @@ public enum ArticleSiteEnum
     Gematsu = 8,
     Desctructiod = 9,
     Mmos = 10,
-    Siliconera = 11
+    Siliconera = 11,
+    HardcoreGamer = 12,
+    Game8Co = 13,
 }

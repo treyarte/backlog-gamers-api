@@ -66,6 +66,15 @@ public class GamingArticlesService:IGamingArticlesService
                 
                 foreach (var item in rssFeed.Channel.Items)
                 {
+                    var itemDate = DateHelper.ConvertStrToDate(item.PubDate);
+
+                    bool isToday = itemDate.Date == DateTimeOffset.Now.Date;
+
+                    if (!isToday)
+                    {
+                        continue;
+                    }
+                    
                     Article article = new(
                         item.Title,
                         articleSite,

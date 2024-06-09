@@ -1,4 +1,5 @@
 ﻿using backlog_gamers_api.Extensions;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using xmlParseExample.Models.Enums;
 
@@ -50,6 +51,8 @@ public class Article : BaseMongoModel
     
     [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
     public DateTimeOffset ArticleDate { get; set; }
+    
+    public List<MongoIdObject> Tags { get; set; }
 }
 
 /// <summary>
