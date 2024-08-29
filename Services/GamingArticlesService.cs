@@ -66,6 +66,15 @@ public class GamingArticlesService:IGamingArticlesService
                 
                 foreach (var item in rssFeed.Channel.Items)
                 {
+                    var itemDate = DateHelper.ConvertStrToDate(item.PubDate);
+
+                    bool isToday = itemDate.Date == DateTimeOffset.Now.Date;
+
+                    if (!isToday)
+                    {
+                        continue;
+                    }
+                    
                     Article article = new(
                         item.Title,
                         articleSite,
@@ -154,10 +163,10 @@ public class GamingArticlesService:IGamingArticlesService
             {
                 switch (source.Type)
                 {
-                    case ArticleSourceType.Xml:
-                        List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
-                        articlesList.AddRange(articlesFromXml);
-                        break;
+                    // case ArticleSourceType.Xml:
+                    //     List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
+                    //     articlesList.AddRange(articlesFromXml);
+                    //     break;
                     case ArticleSourceType.WordPressJson:
                         List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
                         articlesList.AddRange(articlesFromJson);

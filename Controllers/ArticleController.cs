@@ -1,6 +1,8 @@
-﻿using backlog_gamers_api.Models.Articles;
+﻿using backlog_gamers_api.Models;
+using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Repositories.Interfaces;
 using backlog_gamers_api.Services;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
@@ -75,6 +77,22 @@ public class ArticleController : ControllerBase
         try
         {
             var articles = await _gamingArticlesService.GetExternalArticles();
+
+            foreach (var article in articles)
+            {
+                if (article == null || article.Content == null)
+                {
+                    continue;
+                } 
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(article.Content);
+                string parsedText = htmlDoc.DocumentNode.InnerText;
+                List<string> keywords = await _articlesTagService.GetKeywordsFromArticle(parsedText);
+                List<ArticleTag> tags = _articlesTagService.CreateTagsFromKeywords(keywords);
+
+                article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
+            }
+            
             int addCount = await _articlesRepository.PostMultiple(articles);
             return Ok(addCount);
         }
@@ -125,5 +143,19 @@ public class ArticleController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to delete articles");
         }
     }
-    
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteDuplicates()
+    {
+        try
+        {
+            await _articlesRepository.FindDuplicates();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

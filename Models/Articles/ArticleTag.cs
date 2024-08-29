@@ -10,7 +10,13 @@ public class ArticleTag : BaseMongoModel
         DisplayName = displayName;
         Slug = slug;
     }
-    
+
+    public ArticleTag()
+    {
+        DisplayName = "";
+        Slug = "";
+    }
+
     /// <summary>
     /// A user friendly name
     /// </summary>

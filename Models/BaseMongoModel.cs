@@ -20,12 +20,14 @@ public abstract class BaseMongoModel
     /// <summary>
     /// When the object was created at
     /// </summary>
+    [BsonElement("createdAt")]
     [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     
     /// <summary>
     /// When the object was last updated
     /// </summary>
+    [BsonElement("updatedAt")]
     [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
