@@ -143,5 +143,19 @@ public class ArticleController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to delete articles");
         }
     }
-    
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteDuplicates()
+    {
+        try
+        {
+            await _articlesRepository.FindDuplicates();
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
+    }
 }

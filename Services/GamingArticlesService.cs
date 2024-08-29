@@ -163,10 +163,10 @@ public class GamingArticlesService:IGamingArticlesService
             {
                 switch (source.Type)
                 {
-                    case ArticleSourceType.Xml:
-                        List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
-                        articlesList.AddRange(articlesFromXml);
-                        break;
+                    // case ArticleSourceType.Xml:
+                    //     List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
+                    //     articlesList.AddRange(articlesFromXml);
+                    //     break;
                     case ArticleSourceType.WordPressJson:
                         List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
                         articlesList.AddRange(articlesFromJson);

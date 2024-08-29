@@ -90,8 +90,10 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
         {
             return 0;
         }
-            
-        await _collection.InsertManyAsync(docs);
+        //ignores skips duplicates
+        var insertManyOptions = new InsertManyOptions { IsOrdered = false };
+        
+        await _collection.InsertManyAsync(docs, insertManyOptions);
         
         return count;
     }

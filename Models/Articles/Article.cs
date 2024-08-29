@@ -41,17 +41,25 @@ public class Article : BaseMongoModel
         ArticleDate = articleDate;
         Stats = stats;
     }
+    [BsonElement("title")]
     public string Title { get; set; }
+    [BsonElement("articleSite")]
     public ArticleSiteEnum ArticleSite { get; set; }
+    [BsonElement("url")]
     public string Url { get; set; }
+    [BsonElement("shortDescription")]
     public string ShortDescription { get; set; }
+    [BsonElement("imageUrl")]
     public string ImageUrl { get; set; }
+    [BsonElement("content")]
     public string Content { get; set; }
+    [BsonElement("stats")]
     public ArticleStats Stats { get; set; }
     
     [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
+    [BsonElement("articleDate")]
     public DateTimeOffset ArticleDate { get; set; }
-    
+    [BsonElement("tags")]
     public List<MongoIdObject> Tags { get; set; }
 }
 
