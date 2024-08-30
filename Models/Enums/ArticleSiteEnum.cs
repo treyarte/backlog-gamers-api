@@ -16,4 +16,5 @@ public enum ArticleSiteEnum
     Siliconera = 11,
     HardcoreGamer = 12,
     Game8Co = 13,
+    DualShockers = 14,
 }

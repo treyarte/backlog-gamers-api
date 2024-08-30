@@ -27,12 +27,20 @@ public class GamingArticlesService:IGamingArticlesService
     /// <returns></returns>
     private async Task<string> DownloadXML(string url)
     {
-        HttpResponseMessage resp = await _client.GetAsync(url);
-        resp.EnsureSuccessStatusCode();
+        try
+        {
+            HttpResponseMessage resp = await _client.GetAsync(url);
+            resp.EnsureSuccessStatusCode();
 
-        string xml = await resp.Content.ReadAsStringAsync();
+            string xml = await resp.Content.ReadAsStringAsync();
 
-        return xml;
+            return xml;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return "";
+        }
     }
 
     /// <summary>
@@ -46,6 +54,11 @@ public class GamingArticlesService:IGamingArticlesService
     {
         string xml = await DownloadXML(url);
         List<Article> articles = new List<Article>();
+
+        if (string.IsNullOrWhiteSpace(xml))
+        {
+            return articles;
+        }
 
         XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
         namespaces.Add("atom", "http://www.w3.org/2005/Atom");
@@ -163,14 +176,14 @@ public class GamingArticlesService:IGamingArticlesService
             {
                 switch (source.Type)
                 {
-                    // case ArticleSourceType.Xml:
-                    //     List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
-                    //     articlesList.AddRange(articlesFromXml);
-                    //     break;
-                    case ArticleSourceType.WordPressJson:
-                        List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
-                        articlesList.AddRange(articlesFromJson);
+                    case ArticleSourceType.Xml:
+                        List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
+                        articlesList.AddRange(articlesFromXml);
                         break;
+                    // case ArticleSourceType.WordPressJson:
+                    //     List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
+                    //     articlesList.AddRange(articlesFromJson);
+                    //     break;
                     default:
                         break;
                 }

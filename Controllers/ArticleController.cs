@@ -78,20 +78,20 @@ public class ArticleController : ControllerBase
         {
             var articles = await _gamingArticlesService.GetExternalArticles();
 
-            foreach (var article in articles)
-            {
-                if (article == null || article.Content == null)
-                {
-                    continue;
-                } 
-                var htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(article.Content);
-                string parsedText = htmlDoc.DocumentNode.InnerText;
-                List<string> keywords = await _articlesTagService.GetKeywordsFromArticle(parsedText);
-                List<ArticleTag> tags = _articlesTagService.CreateTagsFromKeywords(keywords);
-
-                article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
-            }
+            // foreach (var article in articles)
+            // {
+            //     if (article == null || article.Content == null)
+            //     {
+            //         continue;
+            //     } 
+            //     var htmlDoc = new HtmlDocument();
+            //     htmlDoc.LoadHtml(article.Content);
+            //     string parsedText = htmlDoc.DocumentNode.InnerText;
+            //     List<string> keywords = await _articlesTagService.GetKeywordsFromArticle(parsedText);
+            //     List<ArticleTag> tags = _articlesTagService.CreateTagsFromKeywords(keywords);
+            //
+            //     article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
+            // }
             
             int addCount = await _articlesRepository.PostMultiple(articles);
             return Ok(addCount);
