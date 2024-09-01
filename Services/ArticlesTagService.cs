@@ -51,33 +51,5 @@ public class ArticlesTagService : IArticlesTagService
             return new List<string>();
         }
     }
-
-    public List<ArticleTag> CreateTagsFromKeywords(List<string> keywords)
-    {
-        List<ArticleTag> listOfTags = new List<ArticleTag>();
-        try
-        {
-            foreach (var word in keywords)
-            {
-                //TODO sanitize 
-                string[] separatedChars = word.ToLower().Split(" ");
-
-                string slug = string.Join('-', separatedChars);
-
-                ArticleTag tag = new(word, slug)
-                {
-                    Id = ObjectId.GenerateNewId().ToString()
-                };
-                listOfTags.Add(tag);
-            }
-
-            return listOfTags;
-        }
-        catch (Exception e)
-        {
-            //TODO add logger
-            Console.WriteLine(e);
-            throw new Exception("Failed to create tags");
-        }
-    }
+    
 }

@@ -52,8 +52,8 @@ public class ArticleController : ControllerBase
         }
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetArticleKeywords([FromQuery] string text)
+    [HttpPost]
+    public async Task<IActionResult> GetArticleKeywords([FromBody] string text)
     {
         try
         {

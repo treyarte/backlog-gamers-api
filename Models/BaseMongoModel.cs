@@ -1,7 +1,10 @@
-﻿using backlog_gamers_api.Extensions;
+﻿using System.ComponentModel.DataAnnotations;
+using backlog_gamers_api.Extensions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Serializers;
+using Newtonsoft.Json;
+
 
 namespace backlog_gamers_api.Models;
 
@@ -15,7 +18,9 @@ public abstract class BaseMongoModel
     /// </summary>
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    [DisplayFormat(ConvertEmptyStringToNull = false)] //The database handles generating the ID
+    [JsonProperty("id")]
+    public string Id { get; set; } = "";
     
     /// <summary>
     /// When the object was created at
