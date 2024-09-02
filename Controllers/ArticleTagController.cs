@@ -66,16 +66,15 @@ public class ArticleTagController : ControllerBase
     {
         try
         {
-            //TODO sanitize and Validate input
-            if(!StringHelper.CheckIfValidSlug(articleTag.Name))
+            string slug = articleTag.Slug;
+            slug = StringHelper.SanitizeSlug(slug);
+            
+            if (string.IsNullOrWhiteSpace(slug))
             {
-                articleTag.Slug = articleTag.Name.ToSlug();
-            }
-            else
-            {
-                articleTag.Slug = articleTag.Name;
+                slug = articleTag.Name.ToSlug();
             }
 
+            articleTag.Slug = slug;
             ArticleTag newTag = await _articleTagsRepo.Post(articleTag);
 
             return Ok(newTag);

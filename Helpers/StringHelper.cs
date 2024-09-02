@@ -32,7 +32,7 @@ public static class StringHelper
     /// <returns></returns>
     public static string SanitizeSlug(string slug)
     {
-        string pattern = @"[^a-z0-9\s\-]+";
+        string pattern = @"[^a-z0-9\-]+";
         Regex regex = new Regex(pattern);
         slug = slug.Trim().ToLower();
         slug = regex.Replace(slug, "");

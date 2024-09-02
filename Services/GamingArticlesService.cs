@@ -16,6 +16,10 @@ public class GamingArticlesService:IGamingArticlesService
     public GamingArticlesService()
     {
         _client = new HttpClient();
+        // _client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
+        // _client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        // _client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.5");
+        // _client.DefaultRequestHeaders.Referrer = new Uri("https://www.google.com/");
     }
     
     private readonly HttpClient _client;
