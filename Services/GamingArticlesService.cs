@@ -1,6 +1,7 @@
 ﻿using System.Xml.Serialization;
 using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
+using backlog_gamers_api.Models.Data;
 using backlog_gamers_api.Services.Interfaces;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
@@ -167,6 +168,46 @@ public class GamingArticlesService:IGamingArticlesService
         return articles;
     }
 
+    public async Task<List<Article>> GetArticlesFromRssApp(string url, ArticleSiteEnum articleSite)
+    {
+        // List<RssApp> rssData = new List<RssApp>();
+        List<Article> articles = new List<Article>();
+        
+        var res = await _client.GetAsync(url);
+
+        if (!res.IsSuccessStatusCode)
+        {
+            return articles; 
+        }
+        
+        string articleStr = await res.Content.ReadAsStringAsync();
+         
+        RssApp? rssData = JsonConvert.DeserializeObject<RssApp>(articleStr);
+
+        if (rssData == null)
+        {
+            return articles;
+        }
+
+        foreach (var rssItem in rssData.Items)
+        {
+            Article article = new(
+                rssItem.Title,
+                articleSite,
+                rssItem.Url,
+                rssItem.ContentText.Trim(),
+                rssItem.Image ?? "",
+                "",
+                DateHelper.ConvertStrToDate(rssItem.DatePublished),
+                new ArticleStats()
+            );
+            
+            articles.Add(article);
+        }
+
+        return articles;
+    }
+
     /// <summary>
     /// Get a list of articles from external websites
     /// </summary>
@@ -184,10 +225,14 @@ public class GamingArticlesService:IGamingArticlesService
                         List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
                         articlesList.AddRange(articlesFromXml);
                         break;
-                    // case ArticleSourceType.WordPressJson:
-                    //     List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
-                    //     articlesList.AddRange(articlesFromJson);
-                    //     break;
+                    case ArticleSourceType.WordPressJson:
+                        List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
+                        articlesList.AddRange(articlesFromJson);
+                        break;
+                    case ArticleSourceType.RrsAppJson:
+                        List<Article> articlesFromRssApp = await GetArticlesFromRssApp(source.RssUrl, source.ArticleSite);
+                        articlesList.AddRange(articlesFromRssApp);
+                        break;
                     default:
                         break;
                 }
@@ -200,7 +245,7 @@ public class GamingArticlesService:IGamingArticlesService
         catch (Exception e)
         {
             //TODO log the error
-            return new List<Article>();
+            return articlesList;
         }
     }
 }

@@ -5,5 +5,6 @@ public enum ArticleSourceType
     Unknown = 0,
     Xml = 1,
     WordPressJson = 2,
-    Custom = 3,
+    RrsAppJson = 3,
+    Custom = 4,
 }

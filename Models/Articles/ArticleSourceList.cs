@@ -68,10 +68,10 @@ public static class ArticleSourceList
         ),
         new ArticleSource(            
             "Kotaku",
-            ArticleSourceType.Xml,
+            ArticleSourceType.RrsAppJson,
             ArticleSiteEnum.Kotaku,
             "https://kotaku.com",
-            "https://kotaku.com/rss",
+            "https://rss.app/feeds/v1.1/RBMEJ9Y0dgjGEu4r.json",
             ""
         ),
         new ArticleSource(            
@@ -92,20 +92,21 @@ public static class ArticleSourceList
         // ),
         new ArticleSource(            
             "Dual Shockers",
-            ArticleSourceType.Xml,
+            ArticleSourceType.RrsAppJson,
             ArticleSiteEnum.DualShockers,
             "https://www.dualshockers.com/",
-            "https://www.dualshockers.com/feed/",
+            "https://rss.app/feeds/v1.1/4uUb1eHLIgksxpt3.json",
+            // "https://www.dualshockers.com/feed/",
             ""
         ),
-        new ArticleSource(            
-            "Howtogamerz",
-            ArticleSourceType.Xml,
-            ArticleSiteEnum.DualShockers,
-            "https://www.howtogamerz.com/",
-            "https://www.howtogamerz.com/feeds/posts/default",
-            ""
-        ),
+        // new ArticleSource(            
+        //     "Howtogamerz",
+        //     ArticleSourceType.Xml,
+        //     ArticleSiteEnum.HardcoreGamer,
+        //     "https://www.howtogamerz.com/",
+        //     "https://www.howtogamerz.com/feeds/posts/default",
+        //     ""
+        // ),
         new ArticleSource(            
             "Gematsu",
             ArticleSourceType.WordPressJson,
