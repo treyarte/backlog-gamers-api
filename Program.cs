@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 //DP Injection
 builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>(provider => new ArticlesRepository("articles"));
 builder.Services.AddScoped<IArticleTagsRepo, ArticleTagRepo>(provider => new ArticleTagRepo("articleTags"));
+builder.Services.AddScoped<IArticleSourceRepo, ArticleSourceRepo>(provider => new ArticleSourceRepo("articleSources"));
 
 var app = builder.Build();
 

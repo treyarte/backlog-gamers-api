@@ -85,13 +85,14 @@ public class GamingArticlesService:IGamingArticlesService
                 foreach (var item in rssFeed.Channel.Items)
                 {
                     var itemDate = DateHelper.ConvertStrToDate(item.PubDate);
-
-                    bool isToday = itemDate.Date == DateTimeOffset.Now.Date;
-
-                    if (!isToday)
-                    {
-                        continue;
-                    }
+                    
+                    //TODO add check to see if date is within the past 2 weeks
+                    // bool isToday = itemDate.Date == DateTimeOffset.Now.Date;
+                    //
+                    // if (!isToday)
+                    // {
+                    //     continue;
+                    // }
                     
                     Article article = new(
                         item.Title,
@@ -212,26 +213,36 @@ public class GamingArticlesService:IGamingArticlesService
     /// Get a list of articles from external websites
     /// </summary>
     /// <returns></returns>
-    public async Task<List<Article>> GetExternalArticles()
+    public async Task<List<Article>> GetExternalArticles(List<ArticleSource> sources)
     {
         List<Article> articlesList = new List<Article>();
         try
         {
-            var getArticlesTasks = ArticleSourceList.Sources.Select(async source =>
+            var getArticlesTasks = sources.Select(async source =>
             {
                 switch (source.Type)
                 {
                     case ArticleSourceType.Xml:
                         List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
-                        articlesList.AddRange(articlesFromXml);
+                        if (articlesFromXml.Count > 0)
+                        {
+                            articlesList.AddRange(articlesFromXml);
+                        }
                         break;
                     case ArticleSourceType.WordPressJson:
                         List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
-                        articlesList.AddRange(articlesFromJson);
+                        if (articlesFromJson.Count > 0)
+                        {
+                            articlesList.AddRange(articlesFromJson);
+                        }
                         break;
                     case ArticleSourceType.RrsAppJson:
                         List<Article> articlesFromRssApp = await GetArticlesFromRssApp(source.RssUrl, source.ArticleSite);
-                        articlesList.AddRange(articlesFromRssApp);
+                        
+                        if (articlesFromRssApp.Count > 0)
+                        {
+                            articlesList.AddRange(articlesFromRssApp);
+                        }
                         break;
                     default:
                         break;

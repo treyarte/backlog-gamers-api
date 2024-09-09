@@ -4,6 +4,7 @@ using backlog_gamers_api.Repositories.Interfaces;
 using backlog_gamers_api.Services;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
 using xmlParseExample.Models.Enums;
@@ -17,17 +18,19 @@ namespace backlog_gamers_api.Controllers;
 [Route("api/[controller]/[action]")]
 public class ArticleController : ControllerBase
 {
-    public ArticleController(IArticlesRepository articlesRepository)
+    public ArticleController(IArticlesRepository articlesRepository, IArticleSourceRepo sourceRepo)
     {
         _client = new HttpClient();
         _articlesRepository = articlesRepository;
         _gamingArticlesService = new GamingArticlesService();
         _articlesTagService = new ArticlesTagService(_articlesRepository);
+        _sourceRepo = sourceRepo;
     }
 
     private readonly IArticlesRepository _articlesRepository;
     private readonly GamingArticlesService _gamingArticlesService;
     private readonly ArticlesTagService _articlesTagService;
+    private readonly IArticleSourceRepo _sourceRepo;
     private readonly HttpClient _client;
     
     /// <summary>
@@ -74,9 +77,17 @@ public class ArticleController : ControllerBase
     [ActionName("addExternalArticles")]
     public async Task<IActionResult> AddExternalArticles()
     {
+        int totalArticles = 0;
         try
         {
-            var articles = await _gamingArticlesService.GetExternalArticles();
+            var sources = await _sourceRepo.GetAll();
+
+            var articleSources = sources.ToList();
+            if (articleSources.Count <= 0)
+            {
+                return NotFound("No Article sources have been set");
+            }
+            var articles = await _gamingArticlesService.GetExternalArticles(articleSources);
 
             // foreach (var article in articles)
             // {
@@ -92,9 +103,9 @@ public class ArticleController : ControllerBase
             //
             //     article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
             // }
-            
-            int addCount = await _articlesRepository.PostMultiple(articles);
-            return Ok(addCount);
+
+            totalArticles = await _articlesRepository.CreateArticles(articles);
+            return Ok(totalArticles);
         }
         catch (Exception e)
         {

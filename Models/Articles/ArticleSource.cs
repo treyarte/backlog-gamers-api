@@ -1,8 +1,11 @@
-﻿using xmlParseExample.Models.Enums;
+﻿using backlog_gamers_api.Models;
+using MongoDB.Bson.Serialization.Attributes;
+using xmlParseExample.Models.Enums;
 
 namespace xmlParseExample.Models;
 
-public class ArticleSource
+[BsonIgnoreExtraElements]
+public class ArticleSource : BaseMongoModel
 {
 
     public ArticleSource(string title, ArticleSourceType type, ArticleSiteEnum articleSite,
