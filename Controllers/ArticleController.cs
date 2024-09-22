@@ -2,12 +2,8 @@
 using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Repositories.Interfaces;
 using backlog_gamers_api.Services;
-using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using xmlParseExample.Models;
-using xmlParseExample.Models.Enums;
 
 namespace backlog_gamers_api.Controllers;
 
@@ -55,19 +51,6 @@ public class ArticleController : ControllerBase
         }
     }
 
-    [HttpPost]
-    public async Task<IActionResult> GetArticleKeywords([FromBody] string text)
-    {
-        try
-        {
-            var list = await _articlesTagService.GetKeywordsFromArticle(text);
-            return Ok(list);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-        }
-    }
     
     /// <summary>
     /// Add articles from external sources to our database

@@ -14,6 +14,7 @@ public class Article : BaseMongoModel
     {
         Title = "";
         Url = "";
+        Slug = "";
         ArticleSite = ArticleSiteEnum.Unknown;
         ShortDescription = "";
         ImageUrl = "";
@@ -25,6 +26,7 @@ public class Article : BaseMongoModel
         string title,
         ArticleSiteEnum articleSite,
         string url,
+        string slug,
         string shortDescription,
         string imageUrl,
         string content,
@@ -35,6 +37,7 @@ public class Article : BaseMongoModel
         Title = title;
         ArticleSite = articleSite;
         Url = url;
+        Slug = slug;
         ShortDescription = shortDescription;
         ImageUrl = imageUrl;
         Content = content;
@@ -46,7 +49,12 @@ public class Article : BaseMongoModel
     [BsonElement("articleSite")]
     public ArticleSiteEnum ArticleSite { get; set; }
     [BsonElement("url")]
+    
     public string Url { get; set; }
+    
+    [BsonElement("slug")]
+    public string Slug { get; set; }
+    
     [BsonElement("shortDescription")]
     public string ShortDescription { get; set; }
     [BsonElement("imageUrl")]

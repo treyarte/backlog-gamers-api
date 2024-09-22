@@ -1,8 +1,10 @@
 ﻿using System.Xml.Serialization;
+using backlog_gamers_api.Extensions;
 using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Models.Data;
 using backlog_gamers_api.Services.Interfaces;
+using Ganss.Xss;
 using Newtonsoft.Json;
 using xmlParseExample.Models;
 using xmlParseExample.Models.Enums;
@@ -17,6 +19,8 @@ public class GamingArticlesService:IGamingArticlesService
     public GamingArticlesService()
     {
         _client = new HttpClient();
+        _sanitizer = new HtmlSanitizer();
+        _sanitizer.AllowedAttributes.Add("");
         // _client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
         // _client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
         // _client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.5");
@@ -24,6 +28,7 @@ public class GamingArticlesService:IGamingArticlesService
     }
     
     private readonly HttpClient _client;
+    private readonly HtmlSanitizer _sanitizer;
     
     /// <summary>
     /// Fetches 
@@ -98,7 +103,10 @@ public class GamingArticlesService:IGamingArticlesService
                         item.Title,
                         articleSite,
                         item.Link,
-                        item.Description,
+                        item.Title.ToSlug(),
+                        string.IsNullOrWhiteSpace(item.Description) ? 
+                            HtmlHelper.StripHtml(item.ContentEncoded.Substring(0, 200)) 
+                            : item.Description,
                         item.MediaContent?.Url ?? item.Media?.Url ?? "",
                         item.ContentEncoded,
                         DateHelper.ConvertStrToDate(item.PubDate),
@@ -151,7 +159,8 @@ public class GamingArticlesService:IGamingArticlesService
                 wpArticle.TitleObj.Title,
                 articleSite,
                 wpArticle.Link,
-                "",
+                wpArticle.TitleObj.Title.ToSlug(),
+                HtmlHelper.StripHtml(wpArticle.ContentObj.Content),
                 wpArticle.ImgSrc,
                 wpArticle.ContentObj.Content,
                 DateHelper.ConvertStrToDate(wpArticle.DateString),
@@ -196,6 +205,7 @@ public class GamingArticlesService:IGamingArticlesService
                 rssItem.Title,
                 articleSite,
                 rssItem.Url,
+                rssItem.Title.ToSlug(),
                 rssItem.ContentText.Trim(),
                 rssItem.Image ?? "",
                 "",
@@ -215,7 +225,10 @@ public class GamingArticlesService:IGamingArticlesService
     /// <returns></returns>
     public async Task<List<Article>> GetExternalArticles(List<ArticleSource> sources)
     {
-        List<Article> articlesList = new List<Article>();
+        object listLock = new object();
+        List<Article> xmlList = new List<Article>();
+        List<Article> wpList = new List<Article>();
+        List<Article> rssList = new List<Article>();
         try
         {
             var getArticlesTasks = sources.Select(async source =>
@@ -226,14 +239,20 @@ public class GamingArticlesService:IGamingArticlesService
                         List<Article> articlesFromXml = await GetArticlesFromXML(source.RssUrl, source.ArticleSite);
                         if (articlesFromXml.Count > 0)
                         {
-                            articlesList.AddRange(articlesFromXml);
+                            lock (listLock)
+                            {
+                                xmlList.AddRange(articlesFromXml);
+                            }
                         }
                         break;
                     case ArticleSourceType.WordPressJson:
                         List<Article> articlesFromJson = await GetArticlesFromJson(source.RssUrl, source.ArticleSite);
                         if (articlesFromJson.Count > 0)
                         {
-                            articlesList.AddRange(articlesFromJson);
+                            lock (listLock)
+                            {
+                                wpList.AddRange(articlesFromJson);
+                            }
                         }
                         break;
                     case ArticleSourceType.RrsAppJson:
@@ -241,7 +260,10 @@ public class GamingArticlesService:IGamingArticlesService
                         
                         if (articlesFromRssApp.Count > 0)
                         {
-                            articlesList.AddRange(articlesFromRssApp);
+                            lock (listLock)
+                            {
+                                rssList.AddRange(articlesFromRssApp);
+                            }
                         }
                         break;
                     default:
@@ -251,12 +273,14 @@ public class GamingArticlesService:IGamingArticlesService
 
             await Task.WhenAll(getArticlesTasks);
 
+            var articlesList = xmlList.Concat(wpList).Concat(rssList).ToList();
+            
             return articlesList;
         }
         catch (Exception e)
         {
             //TODO log the error
-            return articlesList;
+            return new List<Article>();
         }
     }
 }

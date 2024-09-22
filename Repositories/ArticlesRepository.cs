@@ -42,7 +42,7 @@ public class ArticlesRepository : BaseRepository<Article>, IArticlesRepository
     /// <returns></returns>
     public async Task FindDuplicates()
     {
-        PipelineDefinition<Article, BsonDocument> pipeLine = new[]
+        PipelineDefinition<Article, BsonArray> pipeLine = new[]
         {
 
             new BsonDocument("$group",

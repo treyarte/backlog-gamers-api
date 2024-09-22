@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using backlog_gamers_api.Extensions;
 using backlog_gamers_api.Helpers;
 using backlog_gamers_api.Models.Articles;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +75,7 @@ public class XmlController : ControllerBase
                             item.Title,
                             articleSite,
                             item.Link,
+                            item.Title.ToSlug(),
                             item.Description,
                             item.MediaContent?.Url ?? "",
                             item.ContentEncoded ?? "",
