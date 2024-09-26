@@ -160,9 +160,9 @@ public class GamingArticlesService:IGamingArticlesService
                 articleSite,
                 wpArticle.Link,
                 wpArticle.TitleObj.Title.ToSlug(),
-                HtmlHelper.StripHtml(wpArticle.ContentObj.Content),
+                HtmlHelper.StripHtml(wpArticle.ContentObj.Content.Substring(0, 200)),
                 wpArticle.ImgSrc,
-                wpArticle.ContentObj.Content,
+                "",
                 DateHelper.ConvertStrToDate(wpArticle.DateString),
                 new ArticleStats()
             );

@@ -14,6 +14,6 @@ public class HtmlHelper
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
         
-        return doc.DocumentNode.InnerHtml;
+        return doc.DocumentNode.InnerText;
     } 
 }
