@@ -79,8 +79,7 @@ public class XmlController : ControllerBase
                             item.Description,
                             item.MediaContent?.Url ?? "",
                             item.ContentEncoded ?? "",
-                            DateHelper.ConvertStrToDate(item.PubDate),
-                            new ArticleStats());
+                            DateHelper.ConvertStrToDate(item.PubDate));
                         
                         articles.Add(article);
                     }

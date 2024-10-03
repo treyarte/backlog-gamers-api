@@ -20,7 +20,7 @@ public class Article : BaseMongoModel
         ImageUrl = "";
         Content = "";
         ArticleDate = DateTimeOffset.MinValue;
-        Stats = new ArticleStats();
+        
     }
     public Article(
         string title,
@@ -30,9 +30,7 @@ public class Article : BaseMongoModel
         string shortDescription,
         string imageUrl,
         string content,
-        DateTimeOffset articleDate,
-        ArticleStats stats
-        )
+        DateTimeOffset articleDate)
     {
         Title = title;
         ArticleSite = articleSite;
@@ -42,7 +40,7 @@ public class Article : BaseMongoModel
         ImageUrl = imageUrl;
         Content = content;
         ArticleDate = articleDate;
-        Stats = stats;
+        
     }
     [BsonElement("title")]
     public string Title { get; set; }

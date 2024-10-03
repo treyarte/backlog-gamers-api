@@ -109,8 +109,7 @@ public class GamingArticlesService:IGamingArticlesService
                             : item.Description,
                         item.MediaContent?.Url ?? item.Media?.Url ?? "",
                         item.ContentEncoded,
-                        DateHelper.ConvertStrToDate(item.PubDate),
-                        new ArticleStats()
+                        DateHelper.ConvertStrToDate(item.PubDate)
                         );
                     
                     articles.Add(article);
@@ -163,8 +162,7 @@ public class GamingArticlesService:IGamingArticlesService
                 HtmlHelper.StripHtml(wpArticle.ContentObj.Content.Substring(0, 200)),
                 wpArticle.ImgSrc,
                 "",
-                DateHelper.ConvertStrToDate(wpArticle.DateString),
-                new ArticleStats()
+                DateHelper.ConvertStrToDate(wpArticle.DateString)
             );
             if (string.IsNullOrWhiteSpace(wpArticle.ImgSrc))
             {
@@ -209,8 +207,7 @@ public class GamingArticlesService:IGamingArticlesService
                 rssItem.ContentText.Trim(),
                 rssItem.Image ?? "",
                 "",
-                DateHelper.ConvertStrToDate(rssItem.DatePublished),
-                new ArticleStats()
+                DateHelper.ConvertStrToDate(rssItem.DatePublished)
             );
             
             articles.Add(article);
