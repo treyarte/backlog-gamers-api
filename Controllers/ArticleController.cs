@@ -2,11 +2,8 @@
 using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Repositories.Interfaces;
 using backlog_gamers_api.Services;
-using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using xmlParseExample.Models;
-using xmlParseExample.Models.Enums;
+using MongoDB.Driver;
 
 namespace backlog_gamers_api.Controllers;
 
@@ -17,17 +14,19 @@ namespace backlog_gamers_api.Controllers;
 [Route("api/[controller]/[action]")]
 public class ArticleController : ControllerBase
 {
-    public ArticleController(IArticlesRepository articlesRepository)
+    public ArticleController(IArticlesRepository articlesRepository, IArticleSourceRepo sourceRepo)
     {
         _client = new HttpClient();
         _articlesRepository = articlesRepository;
         _gamingArticlesService = new GamingArticlesService();
         _articlesTagService = new ArticlesTagService(_articlesRepository);
+        _sourceRepo = sourceRepo;
     }
 
     private readonly IArticlesRepository _articlesRepository;
     private readonly GamingArticlesService _gamingArticlesService;
     private readonly ArticlesTagService _articlesTagService;
+    private readonly IArticleSourceRepo _sourceRepo;
     private readonly HttpClient _client;
     
     /// <summary>
@@ -52,19 +51,6 @@ public class ArticleController : ControllerBase
         }
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetArticleKeywords([FromQuery] string text)
-    {
-        try
-        {
-            var list = await _articlesTagService.GetKeywordsFromArticle(text);
-            return Ok(list);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-        }
-    }
     
     /// <summary>
     /// Add articles from external sources to our database
@@ -74,27 +60,35 @@ public class ArticleController : ControllerBase
     [ActionName("addExternalArticles")]
     public async Task<IActionResult> AddExternalArticles()
     {
+        int totalArticles = 0;
         try
         {
-            var articles = await _gamingArticlesService.GetExternalArticles();
+            var sources = await _sourceRepo.GetAll();
 
-            foreach (var article in articles)
+            var articleSources = sources.ToList();
+            if (articleSources.Count <= 0)
             {
-                if (article == null || article.Content == null)
-                {
-                    continue;
-                } 
-                var htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(article.Content);
-                string parsedText = htmlDoc.DocumentNode.InnerText;
-                List<string> keywords = await _articlesTagService.GetKeywordsFromArticle(parsedText);
-                List<ArticleTag> tags = _articlesTagService.CreateTagsFromKeywords(keywords);
-
-                article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
+                return NotFound("No Article sources have been set");
             }
-            
-            int addCount = await _articlesRepository.PostMultiple(articles);
-            return Ok(addCount);
+            var articles = await _gamingArticlesService.GetExternalArticles(articleSources);
+
+            // foreach (var article in articles)
+            // {
+            //     if (article == null || article.Content == null)
+            //     {
+            //         continue;
+            //     } 
+            //     var htmlDoc = new HtmlDocument();
+            //     htmlDoc.LoadHtml(article.Content);
+            //     string parsedText = htmlDoc.DocumentNode.InnerText;
+            //     List<string> keywords = await _articlesTagService.GetKeywordsFromArticle(parsedText);
+            //     List<ArticleTag> tags = _articlesTagService.CreateTagsFromKeywords(keywords);
+            //
+            //     article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
+            // }
+
+            totalArticles = await _articlesRepository.CreateArticles(articles);
+            return Ok(totalArticles);
         }
         catch (Exception e)
         {

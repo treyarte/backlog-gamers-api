@@ -14,39 +14,45 @@ public class Article : BaseMongoModel
     {
         Title = "";
         Url = "";
+        Slug = "";
         ArticleSite = ArticleSiteEnum.Unknown;
         ShortDescription = "";
         ImageUrl = "";
         Content = "";
         ArticleDate = DateTimeOffset.MinValue;
-        Stats = new ArticleStats();
+        
     }
     public Article(
         string title,
         ArticleSiteEnum articleSite,
         string url,
+        string slug,
         string shortDescription,
         string imageUrl,
         string content,
-        DateTimeOffset articleDate,
-        ArticleStats stats
-        )
+        DateTimeOffset articleDate)
     {
         Title = title;
         ArticleSite = articleSite;
         Url = url;
+        Slug = slug;
         ShortDescription = shortDescription;
         ImageUrl = imageUrl;
         Content = content;
         ArticleDate = articleDate;
-        Stats = stats;
+        
     }
     [BsonElement("title")]
     public string Title { get; set; }
     [BsonElement("articleSite")]
     public ArticleSiteEnum ArticleSite { get; set; }
     [BsonElement("url")]
+    
     public string Url { get; set; }
+    
+    [BsonElement("slug")]
+    public string Slug { get; set; }
+    
     [BsonElement("shortDescription")]
     public string ShortDescription { get; set; }
     [BsonElement("imageUrl")]

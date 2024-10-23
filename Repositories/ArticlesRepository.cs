@@ -14,6 +14,27 @@ public class ArticlesRepository : BaseRepository<Article>, IArticlesRepository
     public ArticlesRepository(string collection) : base(collection)
     {
     }
+    
+    /// <summary>
+    /// Insert only new articles and skip duplicates
+    /// </summary>
+    /// <param name="articles"></param>
+    /// <returns></returns>
+    public async Task<int> CreateArticles(List<Article> articles)
+    {
+        try
+        {
+            //Allows us to ignore the duplicate error and continue inserting articles
+            var insertManyOptions = new InsertManyOptions { IsOrdered = false };
+            await _collection.InsertManyAsync(articles, insertManyOptions);
+            return articles.Count;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return 0;
+        }
+    }
 
     /// <summary>
     /// Find duplicates 
@@ -21,7 +42,7 @@ public class ArticlesRepository : BaseRepository<Article>, IArticlesRepository
     /// <returns></returns>
     public async Task FindDuplicates()
     {
-        PipelineDefinition<Article, BsonDocument> pipeLine = new[]
+        PipelineDefinition<Article, BsonArray> pipeLine = new[]
         {
 
             new BsonDocument("$group",

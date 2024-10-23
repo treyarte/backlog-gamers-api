@@ -12,10 +12,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>(provider =>
-{
-    return new ArticlesRepository("articles");
-});
+//DP Injection //
+builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>(provider => new ArticlesRepository("articles"));
+builder.Services.AddScoped<IArticleTagsRepo, ArticleTagRepo>(provider => new ArticleTagRepo("articleTags"));
+builder.Services.AddScoped<IArticleSourceRepo, ArticleSourceRepo>(provider => new ArticleSourceRepo("articleSources"));
 
 var app = builder.Build();
 

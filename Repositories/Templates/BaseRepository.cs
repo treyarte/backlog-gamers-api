@@ -1,6 +1,8 @@
 ﻿using backlog_gamers_api.Config;
+using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Models.Enums;
 using backlog_gamers_api.Repositories.Templates.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace backlog_gamers_api.Repositories.Templates;
@@ -41,12 +43,13 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<TEntity> Get(string id)
+    public async Task<TEntity?> Get(string id)
     {
+        ObjectId mongoId = new(id);
         var builder = Builders<TEntity>.Filter;
-        FilterDefinition<TEntity> filter = builder.Eq("_id", id);
+        FilterDefinition<TEntity> filter = builder.Eq("_id", mongoId);
         var res = await _collection.FindAsync(filter);
-        return await res.FirstAsync();
+        return res.FirstOrDefault();
     }
 
     /// <summary>
@@ -96,5 +99,33 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
         await _collection.InsertManyAsync(docs, insertManyOptions);
         
         return count;
+    }
+
+    /// <summary>
+    /// Deletes a document by its ID granted that the id is the default mongo ID object (_id)
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<bool> Delete(string id)
+    {
+        try
+        {
+            ObjectId mongoId = new(id);
+            FilterDefinition<TEntity> filterDef = Builders<TEntity>.Filter.Eq("_id", mongoId);
+
+            var res = await _collection.DeleteOneAsync(filterDef);
+
+            if (res.IsAcknowledged)
+            {
+                return (int)res.DeletedCount >= 1;
+            }
+
+            return false;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }
