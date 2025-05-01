@@ -112,6 +112,15 @@ public static class ArticleSourceList
             "https://www.siliconera.com",
             "https://www.siliconera.com/wp-json/wp/v2/posts",
             ""
+        ),        
+        
+        new ArticleSource(            
+            "Game8",
+            ArticleSourceType.RrsAppJson,
+            ArticleSiteEnum.Game8Co,
+            "https://game8.co/",
+            "https://rss.app/feeds/v1.1/O3PF6caI1HDeD6ok.json",
+            ""
         ),
     };
 }

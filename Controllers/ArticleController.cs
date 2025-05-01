@@ -60,7 +60,6 @@ public class ArticleController : ControllerBase
     [ActionName("addExternalArticles")]
     public async Task<IActionResult> AddExternalArticles()
     {
-        int totalArticles = 0;
         try
         {
             var sources = await _sourceRepo.GetAll();
@@ -71,23 +70,8 @@ public class ArticleController : ControllerBase
                 return NotFound("No Article sources have been set");
             }
             var articles = await _gamingArticlesService.GetExternalArticles(articleSources);
-
-            // foreach (var article in articles)
-            // {
-            //     if (article == null || article.Content == null)
-            //     {
-            //         continue;
-            //     } 
-            //     var htmlDoc = new HtmlDocument();
-            //     htmlDoc.LoadHtml(article.Content);
-            //     string parsedText = htmlDoc.DocumentNode.InnerText;
-            //     List<string> keywords = await _articlesTagService.GetKeywordsFromArticle(parsedText);
-            //     List<ArticleTag> tags = _articlesTagService.CreateTagsFromKeywords(keywords);
-            //
-            //     article.Tags = tags.Select(tag => new MongoIdObject(tag.Id)).ToList();
-            // }
-
-            totalArticles = await _articlesRepository.CreateArticles(articles);
+            
+            int totalArticles = await _articlesRepository.CreateArticles(articles);
             return Ok(totalArticles);
         }
         catch (Exception e)
@@ -96,27 +80,8 @@ public class ArticleController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to add external articles");
         }
     }
-
-    /// <summary>
-    /// Removes articles that are no longer relevant 
-    /// </summary>
-    /// <returns></returns>
-    // [HttpGet]
-    // [ActionName("DeleteOldArticles")] //TODO archive instead of delete and protect this route
-    // public async Task<ActionResult<int>> DeleteOldArticles()
-    // {
-    //
-    //     try
-    //     {
-    //
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return StatusCode(StatusCodes.Status500InternalServerError, "Failed to remove old articles");
-    //     }
-    // }
-    //
+    
+    
     /// <summary>
     /// For Testing only, deletes all articles in the db
     /// </summary>

@@ -8,6 +8,7 @@ namespace backlog_gamers_api.Models.Articles;
 /// <summary>
 /// Article class that holds news information from external and internal sites
 /// </summary>
+[BsonIgnoreExtraElements]
 public class Article : BaseMongoModel
 {
     public Article()
@@ -67,6 +68,18 @@ public class Article : BaseMongoModel
     public DateTimeOffset ArticleDate { get; set; }
     [BsonElement("tags")]
     public List<MongoIdObject> Tags { get; set; }
+    
+    /// <summary>
+    /// Whether the article is a featured article
+    /// </summary>
+    [BsonElement("isFeatured")] 
+    public bool IsFeatured { get; set; } = false;
+
+    /// <summary>
+    /// The order the article will show up in the featured list
+    /// </summary>
+    [BsonElement("featuredOrder")] 
+    public int FeaturedOrder { get; set; } = 999;
 }
 
 /// <summary>
