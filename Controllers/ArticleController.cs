@@ -1,4 +1,5 @@
-﻿using backlog_gamers_api.Models;
+﻿using backlog_gamers_api.Helpers;
+using backlog_gamers_api.Models;
 using backlog_gamers_api.Models.Articles;
 using backlog_gamers_api.Repositories.Interfaces;
 using backlog_gamers_api.Services;
@@ -70,6 +71,16 @@ public class ArticleController : ControllerBase
                 return NotFound("No Article sources have been set");
             }
             var articles = await _gamingArticlesService.GetExternalArticles(articleSources);
+
+            foreach (var article in articles)
+            {
+                foreach (var source in articleSources)
+                {
+                    
+             
+                    
+                }
+            }
             
             int totalArticles = await _articlesRepository.CreateArticles(articles);
             return Ok(totalArticles);

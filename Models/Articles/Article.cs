@@ -1,4 +1,5 @@
 ﻿using backlog_gamers_api.Extensions;
+using backlog_gamers_api.Models.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using xmlParseExample.Models.Enums;
@@ -66,9 +67,9 @@ public class Article : BaseMongoModel
     [BsonSerializer(typeof(CustomDateTimeOffsetSerializer))]
     [BsonElement("articleDate")]
     public DateTimeOffset ArticleDate { get; set; }
-    [BsonElement("tags")]
-    public List<MongoIdObject> Tags { get; set; }
-    
+    // [BsonElement("tags")]
+    // public List<MongoIdObject> Tags { get; set; }
+    //
     /// <summary>
     /// Whether the article is a featured article
     /// </summary>
@@ -80,6 +81,9 @@ public class Article : BaseMongoModel
     /// </summary>
     [BsonElement("featuredOrder")] 
     public int FeaturedOrder { get; set; } = 999;
+    
+    [BsonElement("tags")]
+    public List<Tag> Tags { get; set; } = new List<Tag>();
 }
 
 /// <summary>

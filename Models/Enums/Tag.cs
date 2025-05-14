@@ -20,9 +20,12 @@ public enum Tag
     Xbox,
     Steam,
     ESports,
+    LiveService,
+    ArenaShooter,
     Reviews,
     MMO,
     Nintendo,
     NintendoDirect,
     Playstation,
+    Metriod,
 }
