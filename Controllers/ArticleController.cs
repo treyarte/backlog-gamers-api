@@ -74,12 +74,8 @@ public class ArticleController : ControllerBase
 
             foreach (var article in articles)
             {
-                foreach (var source in articleSources)
-                {
-                    
-             
-                    
-                }
+                var tags = TagHelper.GetTags(article.Title, article.ShortDescription);
+                article.Tags = tags;
             }
             
             int totalArticles = await _articlesRepository.CreateArticles(articles);
