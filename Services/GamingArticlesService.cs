@@ -271,6 +271,8 @@ public class GamingArticlesService:IGamingArticlesService
             await Task.WhenAll(getArticlesTasks);
 
             var articlesList = xmlList.Concat(wpList).Concat(rssList).ToList();
+
+            articlesList = TagHelper.TagArticles(articlesList);
             
             return articlesList;
         }

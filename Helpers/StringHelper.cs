@@ -38,4 +38,23 @@ public static class StringHelper
         slug = regex.Replace(slug, "");
         return slug;
     }
+
+    /// <summary>
+    /// Converts a string into text that is considered normalized by removing casing,
+    /// special characters and etc
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string Normalize(string input)
+    {
+        return input
+            .ToLowerInvariant()
+            .Replace("-", "") // remove dashes
+            .Replace("’", "") // smart apostrophes
+            .Replace("'", "") // straight apostrophes
+            .Replace("\"", "")
+            .Replace(",", "")
+            .Replace(".", "")
+            .Replace("é", "e");
+    }
 }
